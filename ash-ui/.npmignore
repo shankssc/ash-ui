@@ -1,0 +1,19 @@
+# Don't publish these files
+.storybook/
+src/
+*.config.*
+*.stories.*
+*.test.*
+.storybook/
+public/
+index.html
+vite.config.ts
+vitest.config.ts
+tsconfig.node.json
+.eslintrc.cjs
+.prettierrc
+.gitignore
+.gitattributes
+README.md
+CHANGELOG.md
+CONTRIBUTING.md
