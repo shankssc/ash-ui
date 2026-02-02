@@ -1,0 +1,8 @@
+# For Python projects:
+echo "__pycache__/" > .gitignore
+echo "*.pyc" >> .gitignore
+echo ".env" >> .gitignore
+
+# For Node.js projects:
+# echo "node_modules/" > .gitignore
+# echo ".env" >> .gitignore
