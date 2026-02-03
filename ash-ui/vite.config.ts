@@ -2,47 +2,45 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
-import { playwright } from '@vitest/browser-playwright';
 import dts from 'vite-plugin-dts';
-
-const dirname = typeof __dirname !== 'undefined' 
-  ? __dirname 
-  : path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   plugins: [
     react(),
-    // Generate TypeScript declaration files
     dts({
       insertTypesEntry: true,
       exclude: ['**/*.stories.tsx', '**/*.test.tsx'],
     }),
   ],
+  
   test: {
-    projects: [{
-      extends: true,
-      plugins: [
-        storybookTest({
-          configDir: path.join(dirname, '.storybook')
-        })
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/test/setup.ts',
+    include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html', 'lcov', 'cobertura'],
+      exclude: [
+        '**/*.stories.tsx',
+        '**/*.test.tsx',
+        'src/test/**',
+        'src/index.ts',
+        'src/tokens/**',
       ],
-      test: {
-        name: 'storybook',
-        browser: {
-          enabled: true,
-          headless: true,
-          provider: playwright({}),
-          instances: [{
-            browser: 'chromium'
-          }]
-        },
-        setupFiles: ['.storybook/vitest.setup.ts']
-      }
-    }]
+      thresholds: {
+        statements: 80,
+        branches: 70,
+        functions: 80,
+        lines: 80,
+      },
+    },
+    reporters: ['default', 'html'],
+    outputFile: {
+      html: 'coverage/test-report.html',
+    },
   },
-  // Library build configuration
+  
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
@@ -51,7 +49,6 @@ export default defineConfig({
       fileName: (format) => `ash-ui.${format}.js`,
     },
     rollupOptions: {
-      // Externalize peer dependencies
       external: ['react', 'react-dom'],
       output: {
         globals: {
@@ -63,6 +60,7 @@ export default defineConfig({
     sourcemap: true,
     emptyOutDir: true,
   },
+  
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
