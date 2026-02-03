@@ -15,8 +15,6 @@ jobs:
   setup:
     name: 🔧 Setup & Cache
     runs-on: ubuntu-latest
-    outputs:
-      cache-hit: ${{ steps.cache.outputs.cache-hit }}
 
     steps:
       - name: 📥 Checkout code
@@ -28,21 +26,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
+          cache: "npm" # ✅ This automatically caches ~/.npm - NO need for separate actions/cache
           cache-dependency-path: package-lock.json
 
-      - name: 🗂️ Cache node_modules
-        id: cache
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: 📦 Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci
+        run: npm ci # ✅ Always run - fast with npm cache warmed up
 
       - name: 📤 Upload dependencies cache
         uses: actions/upload-artifact@v4
@@ -208,7 +196,6 @@ jobs:
           echo "🔗 Live URL: ${{ steps.deploy.outputs.deploy-url }}"
 
   # ===== JOB 7: PR Preview Deployment (ONLY on PRs) =====
-  # Netlify automatically posts a comment when enable-pull-request-comment: true
   preview-deploy:
     name: 👁️ Deploy PR Preview
     runs-on: ubuntu-latest
@@ -228,7 +215,7 @@ jobs:
           publish-dir: "./storybook-static"
           github-token: ${{ secrets.GITHUB_TOKEN }}
           deploy-message: "Preview: PR #${{ github.event.number }} - ${{ github.event.pull_request.title }}"
-          enable-pull-request-comment: true # ← Netlify posts comment automatically
+          enable-pull-request-comment: true
           enable-commit-comment: false
           overwrites-pull-request-comment: true
           alias: pr-${{ github.event.number }}
