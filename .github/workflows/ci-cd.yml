@@ -46,13 +46,15 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: ash-ui/package-lock.json
 
       - name: 📦 Install dependencies
         run: npm ci
+        working-directory: ash-ui
 
       - name: 🔍 Run ESLint
         run: npm run lint
+        working-directory: ash-ui
 
   # ===== JOB 3: Type Checking =====
   type-check:
@@ -69,13 +71,15 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: ash-ui/package-lock.json
 
       - name: 📦 Install dependencies
         run: npm ci
+        working-directory: ash-ui
 
       - name: 🔎 Run TypeScript compiler
         run: npm run type-check
+        working-directory: ash-ui
 
   # ===== JOB 4: Unit Tests =====
   test:
@@ -92,19 +96,21 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: ash-ui/package-lock.json
 
       - name: 📦 Install dependencies
         run: npm ci
+        working-directory: ash-ui
 
       - name: 🏃 Run tests with coverage
         run: npm run test:coverage
+        working-directory: ash-ui
 
       - name: 📊 Upload coverage report
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: coverage/
+          path: ash-ui/coverage/
           retention-days: 7
 
   # ===== JOB 5: Build Storybook (ONLY on PRs and main branch) =====
@@ -123,19 +129,21 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: ash-ui/package-lock.json
 
       - name: 📦 Install dependencies
         run: npm ci
+        working-directory: ash-ui
 
       - name: 🔨 Build Storybook
         run: npm run build-storybook
+        working-directory: ash-ui
 
       - name: 📤 Upload Storybook build
         uses: actions/upload-artifact@v4
         with:
           name: storybook-build
-          path: storybook-static/
+          path: ash-ui/storybook-static/
           retention-days: 7
 
   # ===== JOB 6: Deploy to Netlify (ONLY on main branch) =====
@@ -154,10 +162,11 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: ash-ui/package-lock.json
 
       - name: 📦 Install dependencies
         run: npm ci
+        working-directory: ash-ui
 
       - name: 📥 Download Storybook build
         uses: actions/download-artifact@v4
@@ -203,10 +212,11 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: ash-ui/package-lock.json
 
       - name: 📦 Install dependencies
         run: npm ci
+        working-directory: ash-ui
 
       - name: 📥 Download Storybook build
         uses: actions/download-artifact@v4
