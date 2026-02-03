@@ -5,20 +5,20 @@
 
 /* CSS Reset */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 /* Focus visible for accessibility */
 :focus-visible {
-    outline: 2px solid theme('colors.primary.500');
-    outline-offset: 2px;
+  outline: 2px solid theme('colors.primary.500');
+  outline-offset: 2px;
 }
 
 /* Smooth transitions */
 @media (prefers-reduced-motion: no-preference) {
-    * {
-        scroll-behavior: smooth;
-    }
+  * {
+    scroll-behavior: smooth;
+  }
 }
