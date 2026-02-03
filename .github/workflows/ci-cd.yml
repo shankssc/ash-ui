@@ -25,9 +25,11 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
+          cache-dependency-path: ash-ui/package-lock.json
 
       - name: 📦 Install dependencies
         run: npm ci
+        working-directory: ash-ui
 
   # ===== JOB 2: Linting =====
   lint:
