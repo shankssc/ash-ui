@@ -12,4 +12,10 @@ export * as tokens from './tokens';
 // Components
 export { Button } from './components/Button';
 // Re-exporting types for consumers
-export type { ButtonProps, ButtonVariant, ButtonSize } from './components/Button';
+export type {
+  ButtonProps,
+  ButtonVariant,
+  ButtonSize,
+  BorderRadius,
+  BorderStyle,
+} from './components/Button';
