@@ -239,4 +239,65 @@ describe('Button Component', () => {
       expect(screen.getByRole('button')).toHaveAttribute('type', 'submit');
     });
   });
+
+  describe('Border Radius', () => {
+    it('uses default rounded corners when rounded is true', () => {
+      render(<Button rounded>Test</Button>);
+      expect(screen.getByRole('button')).toHaveClass('rounded-button');
+    });
+
+    it('has square corners when rounded is false', () => {
+      render(<Button rounded={false}>Test</Button>);
+      expect(screen.getByRole('button')).toHaveClass('rounded-none');
+    });
+
+    it('applies custom border radius sm', () => {
+      render(<Button rounded="sm">Test</Button>);
+      expect(screen.getByRole('button')).toHaveClass('rounded-button-sm');
+    });
+
+    it('applies custom border radius lg', () => {
+      render(<Button rounded="lg">Test</Button>);
+      expect(screen.getByRole('button')).toHaveClass('rounded-button-lg');
+    });
+
+    it('applies full rounded corners', () => {
+      render(<Button rounded="full">Test</Button>);
+      expect(screen.getByRole('button')).toHaveClass('rounded-full');
+    });
+  });
+
+  describe('Border Style', () => {
+    it('uses solid border by default', () => {
+      render(<Button variant="outline">Test</Button>);
+      expect(screen.getByRole('button')).toHaveClass('border-solid');
+    });
+
+    it('applies dotted border style', () => {
+      render(
+        <Button variant="outline" borderStyle="dotted">
+          Test
+        </Button>,
+      );
+      expect(screen.getByRole('button')).toHaveClass('border-dotted');
+    });
+
+    it('applies dashed border style', () => {
+      render(
+        <Button variant="outline" borderStyle="dashed">
+          Test
+        </Button>,
+      );
+      expect(screen.getByRole('button')).toHaveClass('border-dashed');
+    });
+
+    it('removes border when borderStyle is none', () => {
+      render(
+        <Button variant="outline" borderStyle="none">
+          Test
+        </Button>,
+      );
+      expect(screen.getByRole('button')).toHaveClass('border-none');
+    });
+  });
 });

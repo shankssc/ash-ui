@@ -227,6 +227,78 @@ export const Disabled: Story = {
 };
 
 /**
+ * Rounded Corners - Full pill shape
+ */
+export const RoundedFull: Story = {
+  args: {
+    children: 'Pill Button',
+    rounded: 'full',
+  },
+};
+
+/**
+ * Square Corners - No rounding
+ */
+export const SquareCorners: Story = {
+  args: {
+    children: 'Square Button',
+    rounded: false,
+  },
+};
+
+/**
+ * Dotted Border - Attention grabbing
+ */
+export const DottedBorder: Story = {
+  args: {
+    variant: 'outline',
+    children: 'Dotted Border',
+    borderStyle: 'dotted',
+  },
+};
+
+/**
+ * Dashed Border - Informative style
+ */
+export const DashedBorder: Story = {
+  args: {
+    variant: 'outline',
+    children: 'Dashed Border',
+    borderStyle: 'dashed',
+  },
+};
+
+/**
+ * Border Radius Grid - All options
+ */
+export const BorderRadiusGrid: Story = {
+  render: () => (
+    <div className="grid grid-cols-2 gap-4 p-4 md:grid-cols-3">
+      {(['none', 'sm', 'md', 'lg', 'full', false] as const).map((rounded) => (
+        <Button key={String(rounded)} rounded={rounded} fullWidth>
+          {String(rounded)}
+        </Button>
+      ))}
+    </div>
+  ),
+};
+
+/**
+ * Border Style Grid - All options
+ */
+export const BorderStyleGrid: Story = {
+  render: () => (
+    <div className="grid grid-cols-2 gap-4 p-4">
+      {(['solid', 'dotted', 'dashed', 'none'] as const).map((style) => (
+        <Button key={style} variant="outline" borderStyle={style} fullWidth>
+          {style}
+        </Button>
+      ))}
+    </div>
+  ),
+};
+
+/**
  * Playground - Interactive controls for all props
  */
 export const Playground: Story = {

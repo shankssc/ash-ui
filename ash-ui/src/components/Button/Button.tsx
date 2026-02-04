@@ -14,6 +14,18 @@ export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'dan
 export type ButtonSize = 'sm' | 'md' | 'lg' | 'xl';
 
 /**
+ * Border Radius Options
+ * @public
+ */
+export type BorderRadius = 'none' | 'sm' | 'md' | 'lg' | 'full' | boolean;
+
+/**
+ * Border Style Options
+ * @public
+ */
+export type BorderStyle = 'solid' | 'dotted' | 'dashed' | 'none';
+
+/**
  * Button Props Interface
  * @public
  */
@@ -58,6 +70,18 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   rightIcon?: ReactNode;
 
   /**
+   * Border radius customization
+   * @default true
+   */
+  rounded?: BorderRadius;
+
+  /**
+   * Border style customization
+   * @default 'solid'
+   */
+  borderStyle?: BorderStyle;
+
+  /**
    * Custom class names for additional styling
    */
   className?: string;
@@ -100,6 +124,27 @@ const sizeStyles: Record<ButtonSize, string> = {
   md: 'px-[theme(spacing.button.md.x)] py-[theme(spacing.button.md.y)] text-base rounded-button',
   lg: 'px-[theme(spacing.button.lg.x)] py-[theme(spacing.button.lg.y)] text-lg rounded-button-lg',
   xl: 'px-[theme(spacing.button.xl.x)] py-[theme(spacing.button.xl.y)] text-xl rounded-button-xl',
+};
+
+/**
+ * Border radius utility based on design tokens
+ */
+const borderRadiusStyles: Record<Exclude<BorderRadius, boolean>, string> = {
+  none: 'rounded-none',
+  sm: 'rounded-button-sm',
+  md: 'rounded-button',
+  lg: 'rounded-button-lg',
+  full: 'rounded-full',
+};
+
+/**
+ * Border style utility
+ */
+const borderStyleStyles: Record<BorderStyle, string> = {
+  solid: 'border-solid',
+  dotted: 'border-dotted',
+  dashed: 'border-dashed',
+  none: 'border-none',
 };
 
 /**
@@ -161,6 +206,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       children,
       leftIcon,
       rightIcon,
+      rounded = true,
+      borderStyle = 'solid',
       className = '',
       disabled,
       onClick,
@@ -179,11 +226,21 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       onClick?.(e);
     };
 
+    // Determine border radius class
+    const roundedClass = (() => {
+      if (typeof rounded === 'boolean') {
+        return rounded ? borderRadiusStyles.md : borderRadiusStyles.none;
+      }
+      return borderRadiusStyles[rounded];
+    })();
+
     // Build final className
     const buttonClasses = [
       baseStyles,
       variantStyles[variant],
       sizeStyles[size],
+      roundedClass,
+      borderStyleStyles[borderStyle],
       fullWidth ? 'w-full' : '',
       loading ? 'cursor-wait' : '',
       className,
