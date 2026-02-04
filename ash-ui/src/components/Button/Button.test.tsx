@@ -1,5 +1,6 @@
 // src/components/Button/Button.test.tsx
 import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { Button } from './Button';
 
@@ -114,19 +115,27 @@ describe('Button Component', () => {
       expect(handleClick).not.toHaveBeenCalled();
     });
 
-    it('supports keyboard Enter key', () => {
+    it('calls onClick handler when Enter key is pressed', async () => {
+      const user = userEvent.setup();
       const handleClick = vi.fn();
       render(<Button onClick={handleClick}>Button</Button>);
 
-      fireEvent.keyDown(screen.getByRole('button'), { key: 'Enter', code: 'Enter' });
+      const button = screen.getByRole('button');
+      button.focus();
+      await user.keyboard('{Enter}'); // Press Enter key
+
       expect(handleClick).toHaveBeenCalledTimes(1);
     });
 
-    it('supports keyboard Space key', () => {
+    it('calls onClick handler when Space key is pressed', async () => {
+      const user = userEvent.setup();
       const handleClick = vi.fn();
       render(<Button onClick={handleClick}>Button</Button>);
 
-      fireEvent.keyDown(screen.getByRole('button'), { key: ' ', code: 'Space' });
+      const button = screen.getByRole('button');
+      button.focus();
+      await user.keyboard('[Space]'); // Press Space key
+
       expect(handleClick).toHaveBeenCalledTimes(1);
     });
   });
