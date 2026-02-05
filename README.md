@@ -22,7 +22,7 @@ Production-grade React component library with TypeScript + Tailwind CSS
 
 ## 🚀 Try It Live
 
-**[Interactive Storybook Demo](https://suyash-ui.netlify.app)** ← Share this!
+**[Interactive Storybook Demo](https://ash-ui.netlify.app/)** ← Share this!
 
 ## 📚 Documentation
 
