@@ -6,4 +6,4 @@
  */
 
 export { Button } from './Button';
-export type { ButtonProps, ButtonVariant, ButtonSize, BorderRadius, BorderStyle } from './Button';
+export type { ButtonProps, ButtonVariant, ButtonSize, BorderRadius, BorderStyle } from './types';

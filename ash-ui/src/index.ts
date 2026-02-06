@@ -10,8 +10,9 @@
 export * as tokens from './tokens';
 
 // Components
+
 export { Button } from '@/components/Button';
-// Re-exporting types for consumers
+
 export type {
   ButtonProps,
   ButtonVariant,
@@ -19,3 +20,16 @@ export type {
   BorderRadius,
   BorderStyle,
 } from '@/components/Button';
+
+export { Modal } from '@/components/Modal';
+
+export type {
+  ModalProps,
+  ModalSize,
+  ModalAnimation,
+  ModalHeaderProps,
+  ModalBodyProps,
+  ModalFooterProps,
+  ModalTitleProps,
+  ModalCloseButtonProps,
+} from '@/components/Modal';
