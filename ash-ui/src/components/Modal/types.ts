@@ -160,6 +160,10 @@ export interface ModalFooterProps {
  */
 export interface ModalTitleProps {
   /**
+   * Unique identifier for Modal title
+   */
+  id?: string;
+  /**
    * Custom class names
    */
   className?: string;

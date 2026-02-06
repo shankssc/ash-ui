@@ -165,11 +165,11 @@ export const Modal: React.FC<ModalProps> & {
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
           aria-describedby={ariaDescribedBy}
-          className={`relative z-50 w-full ${sizeConfig[size]} transform transition-all duration-300 ease-out ${enter} ${contentClassName} `}
+          className={`relative z-50 w-full ${sizeConfig[size]} transform transition-all duration-300 ease-out ${enter} ${className} `}
           data-testid={dataTestId}
         >
           <div
-            className={`flex max-h-[90vh] flex-col overflow-hidden rounded-lg bg-white shadow-2xl dark:bg-neutral-900 ${className} `}
+            className={`flex max-h-[90vh] flex-col overflow-hidden rounded-lg bg-white shadow-2xl dark:bg-neutral-900 ${contentClassName} `}
           >
             {children}
           </div>
