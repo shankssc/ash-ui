@@ -196,3 +196,72 @@ export function useRowSelection<T>(
     isRowSelected,
   };
 }
+
+/**
+ * Hook to process and transform table data
+ * Handles sorting and pagination locally if no external handlers provided
+ * @param data - Raw table data
+ * @param sort - Current sort state
+ * @param pagination - Pagination state
+ * @param getRowKey - Function to get unique row key
+ * @returns Processed data and metadata
+ */
+export function useProcessedData<T>(
+  data: T[],
+  sort: SortState,
+  pagination?: {
+    page: number;
+    pageSize: number;
+  },
+  getRowKey?: (row: T, index: number) => string | number,
+) {
+  return useMemo(() => {
+    const processedData = [...data];
+
+    // Apply sorting if configured
+    if (sort.key && sort.direction) {
+      processedData.sort((a, b) => {
+        const aValue = (a as Record<string, unknown>)[sort.key];
+        const bValue = (b as Record<string, unknown>)[sort.key];
+
+        if (aValue == null) return 1;
+        if (bValue == null) return -1;
+
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return sort.direction === 'asc'
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
+        }
+
+        if (aValue < bValue) return sort.direction === 'asc' ? -1 : 1;
+        if (aValue > bValue) return sort.direction === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+
+    // Calculating pagination metadata
+    const total = processedData.length;
+    const pageData = pagination
+      ? processedData.slice(
+          (pagination.page - 1) * pagination.pageSize,
+          pagination.page * pagination.pageSize,
+        )
+      : processedData;
+
+    // Generate row keys if needed
+    const rowsWithKeys = pageData.map((row, index) => {
+      const globalIndex = pagination ? (pagination.page - 1) * pagination.pageSize + index : index;
+      return {
+        row,
+        key: getRowKey ? getRowKey(row, globalIndex) : globalIndex,
+      };
+    });
+
+    return {
+      rows: rowsWithKeys,
+      total,
+      hasData: data.length > 0,
+      isEmpty: data.length === 0,
+    };
+  }, [data, sort, pagination, getRowKey]);
+}
