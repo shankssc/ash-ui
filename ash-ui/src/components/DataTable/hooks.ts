@@ -115,3 +115,84 @@ export function usePagination(config?: {
     endIndex: Math.min(page * pageSize, total),
   };
 }
+
+/**
+ * Hook to manage row selection state
+ * @param enableSelection - Whether selection is enabled
+ * @param onSelectionChange - Callback when selection changes
+ * @param getRowKey - Function to get unique row key
+ * @returns Selection state and handlers
+ */
+export function useRowSelection<T>(
+  enableSelection: boolean,
+  getRowKey?: (row: T, index: number) => string | number,
+) {
+  const [selectedRowKeys, setSelectedRowKeys] = useState<Set<string | number>>(new Set());
+
+  const toggleRow = useCallback(
+    (row: T, index: number, isSelected?: boolean) => {
+      if (!enableSelection) return;
+
+      const key = getRowKey ? getRowKey(row, index) : index;
+      const newSelection = new Set(selectedRowKeys);
+
+      if (isSelected === undefined) {
+        // Toggle selection
+        if (newSelection.has(key)) {
+          newSelection.delete(key);
+        } else {
+          newSelection.add(key);
+        }
+      } else if (isSelected) {
+        // Force select
+        newSelection.add(key);
+      } else {
+        // Force deselect
+        newSelection.delete(key);
+      }
+
+      setSelectedRowKeys(newSelection);
+      return newSelection;
+    },
+    [enableSelection, getRowKey, selectedRowKeys],
+  );
+
+  const toggleAllRows = useCallback(
+    (rows: T[], isSelected: boolean) => {
+      if (!enableSelection) return;
+
+      const newSelection = new Set<string | number>();
+      if (isSelected) {
+        rows.forEach((row, index) => {
+          const key = getRowKey ? getRowKey(row, index) : index;
+          newSelection.add(key);
+        });
+      }
+
+      setSelectedRowKeys(newSelection);
+      return newSelection;
+    },
+    [enableSelection, getRowKey],
+  );
+
+  const clearSelection = useCallback(() => {
+    setSelectedRowKeys(new Set());
+  }, []);
+
+  const isRowSelected = useCallback(
+    (row: T, index: number) => {
+      if (!enableSelection) return false;
+      const key = getRowKey ? getRowKey(row, index) : index;
+      return selectedRowKeys.has(key);
+    },
+    [enableSelection, getRowKey, selectedRowKeys],
+  );
+
+  return {
+    selectedRowKeys,
+    toggleRow,
+    toggleAllRows,
+    clearSelection,
+    isRowSelected,
+  };
+}
