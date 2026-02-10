@@ -5,25 +5,28 @@
 export interface ColumnDef<TData> {
   /** Unique column identifier */
   id: string;
-  
+
   /** Header display text or custom renderer */
-  header: string | React.ReactNode | ((props: { table: DataTableInstance<TData> }) => React.ReactNode);
-  
+  header:
+    | string
+    | React.ReactNode
+    | ((props: { table: DataTableInstance<TData> }) => React.ReactNode);
+
   /** Cell content accessor or custom renderer */
   cell: keyof TData | ((props: { row: TData; table: DataTableInstance<TData> }) => React.ReactNode);
-  
+
   /** Whether column is sortable */
   sortable?: boolean;
-  
+
   /** Custom header class names */
   headerClassName?: string;
-  
+
   /** Custom cell class names */
   cellClassName?: string;
-  
+
   /** Column width (CSS value) */
   width?: string;
-  
+
   /** Whether column is hidden */
   hidden?: boolean;
 }
@@ -72,19 +75,19 @@ export interface RowSelectionState<TData> {
 export interface DataTableProps<TData> {
   /** Array of data objects to display */
   data: TData[];
-  
+
   /** Column definitions */
   columns: ColumnDef<TData>[];
-  
+
   /** Loading state */
   loading?: boolean;
-  
+
   /** Empty state message or custom component */
   emptyState?: string | React.ReactNode;
-  
+
   /** Loading skeleton rows count */
   skeletonRows?: number;
-  
+
   /** Pagination configuration */
   pagination?: {
     page: number;
@@ -93,28 +96,28 @@ export interface DataTableProps<TData> {
     onPageChange: (page: number) => void;
     onPageSizeChange: (pageSize: number) => void;
   };
-  
+
   /** Initial sort state */
   initialSort?: SortState;
-  
+
   /** Callback when sort changes */
   onSortChange?: (sort: SortState) => void;
-  
+
   /** Enable row selection */
   enableSelection?: boolean;
-  
+
   /** Callback when row selection changes */
   onSelectionChange?: (selectedRows: TData[]) => void;
-  
+
   /** Custom row key function */
   getRowKey?: (row: TData, index: number) => string | number;
-  
+
   /** Custom class names for table */
   className?: string;
-  
+
   /** Custom class names for table container */
   containerClassName?: string;
-  
+
   /** Test ID for testing */
   'data-testid'?: string;
 }
