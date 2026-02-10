@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import type { SortState, SortDirection } from './types';
 
 /**
@@ -41,5 +41,77 @@ export function useSort<T>(
     onSort: handleSort,
     isSorted: (key: string) => sort.key === key && sort.direction !== null,
     getSortDirection: (key: string) => (sort.key === key ? sort.direction : null),
+  };
+}
+
+/**
+ * Hook to manage table pagination state
+ * @param config - Pagination configuration
+ * @returns Pagination state and handlers
+ */
+export function usePagination(config?: {
+  page: number;
+  pageSize: number;
+  total: number;
+  onPageChange: (page: number) => void;
+  onPageSizeChange: (pageSize: number) => void;
+}) {
+  const [localPage, setLocalPage] = useState(1);
+  const [localPageSize, setLocalPageSize] = useState(10);
+
+  // Use external config if provided, otherwise use local state
+  const page = config?.page ?? localPage;
+  const pageSize = config?.pageSize ?? localPageSize;
+  const total = config?.total ?? 0;
+
+  const totalPages = useMemo(() => Math.ceil(total / pageSize), [total, pageSize]);
+
+  const handlePageChange = useCallback(
+    (newPage: number) => {
+      const clampedPage = Math.max(1, Math.min(newPage, totalPages));
+      if (config) {
+        config.onPageChange(clampedPage);
+      } else {
+        setLocalPage(clampedPage);
+      }
+    },
+    [config, totalPages],
+  );
+
+  const handlePageSizeChange = useCallback(
+    (newSize: number) => {
+      if (config) {
+        config.onPageSizeChange(newSize);
+        // Reset to first page when page size changes
+        config.onPageChange(1);
+      } else {
+        setLocalPageSize(newSize);
+        setLocalPage(1);
+      }
+    },
+    [config],
+  );
+
+  const handleNextPage = useCallback(() => {
+    if (page < totalPages) handlePageChange(page + 1);
+  }, [page, totalPages, handlePageChange]);
+
+  const handlePrevPage = useCallback(() => {
+    if (page > 1) handlePageChange(page - 1);
+  }, [page, handlePageChange]);
+
+  return {
+    page,
+    pageSize,
+    total,
+    totalPages,
+    setPage: handlePageChange,
+    setPageSize: handlePageSizeChange,
+    nextPage: handleNextPage,
+    prevPage: handlePrevPage,
+    canNextPage: page < totalPages,
+    canPrevPage: page > 1,
+    startIndex: (page - 1) * pageSize + 1,
+    endIndex: Math.min(page * pageSize, total),
   };
 }
