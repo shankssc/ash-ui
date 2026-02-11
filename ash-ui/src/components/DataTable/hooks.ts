@@ -7,10 +7,7 @@ import type { SortState, SortDirection } from './types';
  * @param onSortChange - Callback when sort changes
  * @returns Sort state and handlers
  */
-export function useSort<T>(
-  initialSort?: { key: keyof T; direction: SortDirection },
-  onSortChange?: (sort: SortState) => void,
-) {
+export function useSort(initialSort?: SortState, onSortChange?: (sort: SortState) => void) {
   const [sort, setSort] = useState<SortState>(
     initialSort
       ? { key: String(initialSort.key), direction: initialSort.direction }
