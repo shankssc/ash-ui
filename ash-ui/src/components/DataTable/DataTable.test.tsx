@@ -1,4 +1,4 @@
-import { render, screen /*fireEvent, waitFor*/ } from '@testing-library/react';
+import { render, screen, waitFor /*fireEvent*/ } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { DataTable } from './DataTable';
@@ -228,5 +228,98 @@ describe('DataTable Component', () => {
 
       expect(onPageSizeChange).toHaveBeenCalledWith(25);
     });
+  });
+
+  describe('Row Selection', () => {
+    it('renders selection checkboxes when enableSelection is true', () => {
+      render(<DataTable data={sampleData} columns={columns} enableSelection={true} />);
+
+      // Should have checkbox in header and each row
+      const checkboxes = screen.getAllByRole('checkbox');
+      expect(checkboxes).toHaveLength(4); // 1 header + 3 rows
+    });
+
+    it('selects single row when checkbox is clicked', async () => {
+      const onSelectionChange = vi.fn();
+      render(
+        <DataTable
+          data={sampleData}
+          columns={columns}
+          enableSelection={true}
+          onSelectionChange={onSelectionChange}
+        />,
+      );
+
+      // Click first row checkbox
+      const rowCheckboxes = screen.getAllByRole('checkbox');
+      await user.click(rowCheckboxes[1]); // First data row (index 1, after header)
+
+      // Should trigger selection callback with selected row
+      await waitFor(() => {
+        expect(onSelectionChange).toHaveBeenCalledWith([sampleData[0]]);
+      });
+    });
+
+    it('selects all rows when header checkbox is clicked', async () => {
+      const onSelectionChange = vi.fn();
+      render(
+        <DataTable
+          data={sampleData}
+          columns={columns}
+          enableSelection={true}
+          onSelectionChange={onSelectionChange}
+        />,
+      );
+
+      // Click header checkbox
+      const headerCheckbox = screen.getAllByRole('checkbox')[0];
+      await user.click(headerCheckbox);
+
+      // Should select all rows
+      await waitFor(() => {
+        expect(onSelectionChange).toHaveBeenCalledWith(sampleData);
+      });
+    });
+
+    it('deselects all rows when header checkbox is clicked again', async () => {
+      const onSelectionChange = vi.fn();
+      render(
+        <DataTable
+          data={sampleData}
+          columns={columns}
+          enableSelection={true}
+          onSelectionChange={onSelectionChange}
+        />,
+      );
+
+      const headerCheckbox = screen.getAllByRole('checkbox')[0];
+
+      // Select all
+      await user.click(headerCheckbox);
+      await waitFor(() => {
+        expect(onSelectionChange).toHaveBeenCalledWith(sampleData);
+      });
+
+      // Clear calls
+      onSelectionChange.mockClear();
+
+      // Deselect all
+      await user.click(headerCheckbox);
+      await waitFor(() => {
+        expect(onSelectionChange).toHaveBeenCalledWith([]);
+      });
+    });
+  });
+
+  it('highlights selected rows with background color', async () => {
+    render(<DataTable data={sampleData} columns={columns} enableSelection={true} />);
+
+    const rowCheckboxes = screen.getAllByRole('checkbox');
+    await user.click(rowCheckboxes[1]); // Select first row
+
+    // First row should have selection background class
+    const rows = screen.getAllByRole('row');
+    const firstDataRow = rows[1]; // First data row (after header)
+    expect(firstDataRow).toHaveClass('bg-primary-50');
   });
 });
