@@ -123,4 +123,110 @@ describe('DataTable Component', () => {
       expect(emailHeader).not.toHaveAttribute('aria-sort');
     });
   });
+
+  describe('Pagination', () => {
+    it('renders pagination control when pagination is provided', () => {
+      render(
+        <DataTable
+          data={sampleData}
+          columns={columns}
+          pagination={{
+            page: 1,
+            pageSize: 10,
+            total: 50,
+            onPageChange: vi.fn(),
+            onPageSizeChange: vi.fn(),
+          }}
+        />,
+      );
+
+      const paginationContainer = screen.getByText(/Showing/i).parentElement;
+      expect(paginationContainer?.textContent).toMatch(/Showing 1 to 10 of 50 entries/i);
+
+      expect(screen.getByRole('button', { name: /Previous/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Next/i })).toBeInTheDocument();
+    });
+
+    it('disables previous button on first page', () => {
+      render(
+        <DataTable
+          data={sampleData}
+          columns={columns}
+          pagination={{
+            page: 1,
+            pageSize: 10,
+            total: 50,
+            onPageChange: vi.fn(),
+            onPageSizeChange: vi.fn(),
+          }}
+        />,
+      );
+
+      const prevButton = screen.getByRole('button', { name: /Previous/i });
+      expect(prevButton).toBeDisabled();
+    });
+
+    it('enables next button when not on last page', () => {
+      render(
+        <DataTable
+          data={sampleData}
+          columns={columns}
+          pagination={{
+            page: 1,
+            pageSize: 10,
+            total: 50,
+            onPageChange: vi.fn(),
+            onPageSizeChange: vi.fn(),
+          }}
+        />,
+      );
+
+      const nextButton = screen.getByRole('button', { name: /Next/i });
+      expect(nextButton).not.toBeDisabled();
+    });
+
+    it('calls onPageChange when next button is clicked', async () => {
+      const onPageChange = vi.fn();
+      render(
+        <DataTable
+          data={sampleData}
+          columns={columns}
+          pagination={{
+            page: 1,
+            pageSize: 10,
+            total: 50,
+            onPageChange,
+            onPageSizeChange: vi.fn(),
+          }}
+        />,
+      );
+
+      const nextButton = screen.getByRole('button', { name: /Next/i });
+      await user.click(nextButton);
+
+      expect(onPageChange).toHaveBeenCalledWith(2);
+    });
+
+    it('calls onPageSizeChange when page size is changed', async () => {
+      const onPageSizeChange = vi.fn();
+      render(
+        <DataTable
+          data={sampleData}
+          columns={columns}
+          pagination={{
+            page: 1,
+            pageSize: 10,
+            total: 50,
+            onPageChange: vi.fn(),
+            onPageSizeChange,
+          }}
+        />,
+      );
+
+      const select = screen.getByRole('combobox', { name: /Items per page/i });
+      await user.selectOptions(select, '25');
+
+      expect(onPageSizeChange).toHaveBeenCalledWith(25);
+    });
+  });
 });
