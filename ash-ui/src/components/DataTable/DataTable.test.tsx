@@ -1,6 +1,6 @@
 import { render, screen /*fireEvent, waitFor*/ } from '@testing-library/react';
-// import userEvent from '@testing-library/user-event';
-import { describe, it, expect /*, vi*/ } from 'vitest';
+import userEvent from '@testing-library/user-event';
+import { describe, it, expect, vi } from 'vitest';
 import { DataTable } from './DataTable';
 import type { ColumnDef } from './types';
 
@@ -29,7 +29,7 @@ const columns: ColumnDef<User>[] = [
 ];
 
 describe('DataTable Component', () => {
-  // const user = userEvent.setup();
+  const user = userEvent.setup();
 
   describe('Rendering', () => {
     it('renders table with data', () => {
@@ -77,6 +77,50 @@ describe('DataTable Component', () => {
 
       expect(screen.getByTestId('custom-empty')).toBeInTheDocument();
       expect(screen.getByText('Custom Empty')).toBeInTheDocument();
+    });
+  });
+
+  describe('Sorting', () => {
+    it('sorts column when header is clicked', async () => {
+      const onSortChange = vi.fn();
+      render(<DataTable data={sampleData} columns={columns} onSortChange={onSortChange} />);
+
+      // Click Name header
+      const nameHeader = screen.getByText('Name').closest('th');
+      await user.click(nameHeader!);
+
+      // Should trigger sort callback
+      expect(onSortChange).toHaveBeenCalledWith({ key: 'name', direction: 'asc' });
+
+      // Click again to toggle direction
+      await user.click(nameHeader!);
+      expect(onSortChange).toHaveBeenCalledWith({ key: 'name', direction: 'desc' });
+    });
+
+    it('shows sort indicators for sorted columns', () => {
+      render(
+        <DataTable
+          data={sampleData}
+          columns={columns}
+          initialSort={{ key: 'name', direction: 'asc' }}
+        />,
+      );
+
+      // Sort indicator should be present on sorted column
+      const nameHeader = screen.getByText('Name').closest('th');
+      expect(nameHeader).toHaveClass('bg-neutral-100'); // Sorted column has bg color
+
+      // Should have sort icon (SVG path for ascending)
+      const svg = nameHeader!.querySelector('svg');
+      expect(svg).toBeInTheDocument();
+    });
+
+    it('does not show sort indicators for unsorted columns', () => {
+      render(<DataTable data={sampleData} columns={columns} />);
+
+      const emailHeader = screen.getByText('Email').closest('th');
+      expect(emailHeader).not.toHaveClass('bg-neutral-100');
+      expect(emailHeader).not.toHaveAttribute('aria-sort');
     });
   });
 });
