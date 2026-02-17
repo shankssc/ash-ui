@@ -28,6 +28,8 @@ const columns: ColumnDef<User>[] = [
   { id: 'status', header: 'Status', cell: 'status', hidden: true },
 ];
 
+const user = userEvent.setup();
+
 describe('DataTable Component', () => {
   const user = userEvent.setup();
 
@@ -377,4 +379,63 @@ describe('Custom Rendering', () => {
     expect(screen.getByTestId('header-sort')).toHaveTextContent('asc');
     expect(screen.getByTestId('cell-1')).toHaveTextContent('name');
   });
+});
+
+describe('Accessibility', () => {
+  it('has proper ARIA attributes for sorted columns', () => {
+    render(
+      <DataTable 
+        data={sampleData}
+        columns={columns}
+        initialSort={{ key: 'name', direction: 'asc' }}
+      />
+    );
+
+    const nameHeader = screen.getByText('Name').closest('th');
+    expect(nameHeader).toHaveAttribute('aria-sort', 'ascending');
+    expect(nameHeader).toHaveAttribute('aria-sortable', 'true');
+  });
+
+  it('has proper ARIA attributes for selection checkboxes', () => {
+      render(<DataTable data={sampleData} columns={columns} enableSelection={true} />);
+      
+      const checkboxes = screen.getAllByRole('checkbox');
+      
+      // Header checkbox
+      expect(checkboxes[0]).toHaveAttribute('aria-label', 'Select all rows');
+      
+      // Row checkboxes
+      expect(checkboxes[1]).toHaveAttribute('aria-label', 'Select row 0');
+      expect(checkboxes[2]).toHaveAttribute('aria-label', 'Select row 1');
+  });
+
+  it('has proper ARIA attributes for pagination buttons', () => {
+      render(
+        <DataTable
+          data={sampleData}
+          columns={columns}
+          pagination={{
+            page: 1,
+            pageSize: 10,
+            total: 50,
+            onPageChange: vi.fn(),
+            onPageSizeChange: vi.fn(),
+          }}
+        />
+      );
+      
+      expect(screen.getByRole('button', { name: 'Previous page' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Next page' })).toBeInTheDocument();
+      expect(screen.getByRole('combobox', { name: 'Items per page' })).toBeInTheDocument();
+  });
+
+  it('sets aria-selected on selected rows', async () => {
+      render(<DataTable data={sampleData} columns={columns} enableSelection={true} />);
+      
+      const rowCheckboxes = screen.getAllByRole('checkbox');
+      await user.click(rowCheckboxes[1]);
+      
+      const rows = screen.getAllByRole('row');
+      expect(rows[1]).toHaveAttribute('aria-selected', 'true');
+    });
 });
