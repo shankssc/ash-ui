@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { DataTable } from './DataTable';
 import type { ColumnDef } from './types';
+import { useState } from 'react';
 
 // Test data type
 interface User {
@@ -447,5 +448,70 @@ describe('Responsive Design', () => {
     // Should have overflow-hidden div wrapping the table
     const container = screen.getByTestId('data-table').closest('div');
     expect(container).toHaveClass('overflow-hidden');
+  });
+});
+
+describe('Edge Cases', () => {
+  it('handles empty columns array gracefully', () => {
+    expect(() => {
+      render(<DataTable data={sampleData} columns={[]} />);
+    }).not.toThrow();
+  });
+
+  it('handles null/undefined values in data', () => {
+    const dataWithNulls = [
+      { id: 1, name: null, email: undefined, role: 'Admin', status: 'active' } as unknown as User,
+    ];
+
+    render(<DataTable data={dataWithNulls} columns={columns} />);
+
+    // Should render without crashing
+    expect(screen.getByTestId('data-table')).toBeInTheDocument();
+  });
+
+  it('clears selection when page changes with external pagination', async () => {
+    const onSelectionChange = vi.fn();
+
+    // Use React state to manage pagination props (simulates real usage)
+    const TestComponent = () => {
+      const [page, setPage] = useState(1);
+
+      return (
+        <DataTable
+          data={sampleData}
+          columns={columns}
+          enableSelection={true}
+          onSelectionChange={onSelectionChange}
+          pagination={{
+            page,
+            pageSize: 10,
+            total: 50,
+            onPageChange: setPage,
+            onPageSizeChange: vi.fn(),
+          }}
+        />
+      );
+    };
+
+    render(<TestComponent />);
+
+    // Select a row
+    const rowCheckboxes = screen.getAllByRole('checkbox');
+    await user.click(rowCheckboxes[1]);
+    await waitFor(() => {
+      expect(onSelectionChange).toHaveBeenCalledWith([sampleData[0]]);
+    });
+
+    // Clear mock for next assertion
+    onSelectionChange.mockClear();
+
+    // Change page (triggers real state update)
+    const nextButton = screen.getByRole('button', { name: /Next/i });
+    await user.click(nextButton);
+
+    // the effect triggers because pagination.page actually changed
+    await waitFor(() => {
+      expect(onSelectionChange).toHaveBeenCalledWith([]);
+    });
   });
 });
