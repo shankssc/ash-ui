@@ -323,3 +323,58 @@ describe('DataTable Component', () => {
     expect(firstDataRow).toHaveClass('bg-primary-50');
   });
 });
+
+describe('Custom Rendering', () => {
+  it('renders custom header content', () => {
+    const customColumns: ColumnDef<User>[] = [
+      {
+        id: 'name',
+        header: () => <span data-testid="custom-header">Custom Name</span>,
+        cell: 'name',
+      },
+    ];
+
+    render(<DataTable data={sampleData} columns={customColumns} />);
+
+    expect(screen.getByTestId('custom-header')).toBeInTheDocument();
+    expect(screen.getByText('Custom Name')).toBeInTheDocument();
+  });
+
+  it('renders custom cell content with row data', () => {
+    const customColumns: ColumnDef<User>[] = [
+      {
+        id: 'name',
+        header: 'Name',
+        cell: ({ row }) => <strong data-testid={`name-${row.id}`}>{row.name}</strong>,
+      },
+    ];
+
+    render(<DataTable data={sampleData} columns={customColumns} />);
+
+    expect(screen.getByTestId('name-1')).toHaveTextContent('John Doe');
+    expect(screen.getByTestId('name-2')).toHaveTextContent('Jane Smith');
+  });
+
+  it('passes table context to custom renderers', () => {
+    const customColumns: ColumnDef<User>[] = [
+      {
+        id: 'name',
+        header: ({ table }) => (
+          <span data-testid="header-sort">{table.sort.direction || 'none'}</span>
+        ),
+        cell: ({ row, table }) => <span data-testid={`cell-${row.id}`}>{table.sort.key}</span>,
+      },
+    ];
+
+    render(
+      <DataTable
+        data={sampleData}
+        columns={customColumns}
+        initialSort={{ key: 'name', direction: 'asc' }}
+      />,
+    );
+
+    expect(screen.getByTestId('header-sort')).toHaveTextContent('asc');
+    expect(screen.getByTestId('cell-1')).toHaveTextContent('name');
+  });
+});
