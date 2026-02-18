@@ -33,3 +33,14 @@ export type {
   ModalTitleProps,
   ModalCloseButtonProps,
 } from '@/components/Modal';
+
+export { DataTable } from '@/components/DataTable';
+
+export type {
+  ColumnDef,
+  SortDirection,
+  PaginationState,
+  RowSelectionState,
+  DataTableProps,
+  DataTableInstance,
+} from '@/components/DataTable';
