@@ -228,3 +228,13 @@ export const clampDate = (date: Date, minDate?: Date, maxDate?: Date): Date => {
   if (maxDate && isAfter(date, maxDate)) return maxDate;
   return date;
 };
+
+export {
+  isSameMonth,
+  isBefore,
+  isAfter,
+  startOfMonth,
+  endOfMonth,
+  eachDayOfInterval,
+  getDay,
+} from 'date-fns';
