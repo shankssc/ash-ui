@@ -44,3 +44,12 @@ export type {
   DataTableProps,
   DataTableInstance,
 } from '@/components/DataTable';
+
+export { DateRangePicker } from '@/components/DateRangePicker';
+
+export type {
+  DateRangePickerProps,
+  DateRangeValue,
+  DateRangePickerVariant,
+  DateRangePickerSize,
+} from '@/components/DateRangePicker';
