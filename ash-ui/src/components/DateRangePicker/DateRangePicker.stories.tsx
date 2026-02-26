@@ -23,26 +23,26 @@ const meta: Meta<typeof DateRangePicker> = {
     modalOnMobile: { control: 'boolean' },
     disabled: { control: 'boolean' },
   },
-}
+};
 
-export default meta
-type Story = StoryObj<typeof DateRangePicker>
+export default meta;
+type Story = StoryObj<typeof DateRangePicker>;
 
 // Default story with controlled state
 export const Default: Story = {
   render: (args) => {
-    const [value, setValue] = useState<DateRangeValue>({ from: null, to: null })
-    return <DateRangePicker {...args} value={value} onChange={setValue} />
+    const [value, setValue] = useState<DateRangeValue>({ from: null, to: null });
+    return <DateRangePicker {...args} value={value} onChange={setValue} />;
   },
   args: {
     'aria-label': 'Select date range',
   },
-}
+};
 
 // With min/max constraints
 export const WithConstraints: Story = {
   render: (args) => {
-    const [value, setValue] = useState<DateRangeValue>({ from: null, to: null })
+    const [value, setValue] = useState<DateRangeValue>({ from: null, to: null });
     return (
       <DateRangePicker
         {...args}
@@ -52,64 +52,64 @@ export const WithConstraints: Story = {
         maxDate={new Date('2024-12-31')}
         disabledDateStrategy="past"
       />
-    )
+    );
   },
-}
+};
 
 // Variants showcase
 export const Variants: Story = {
   render: () => {
-    const [value, setValue] = useState<DateRangeValue>({ from: null, to: null })
+    const [value, setValue] = useState<DateRangeValue>({ from: null, to: null });
     return (
       <div className="flex flex-col gap-4 p-4">
         <DateRangePicker variant="default" value={value} onChange={setValue} />
         <DateRangePicker variant="minimal" value={value} onChange={setValue} />
         <DateRangePicker variant="compact" value={value} onChange={setValue} />
       </div>
-    )
+    );
   },
-}
+};
 
 // Sizes showcase
 export const Sizes: Story = {
   render: () => {
-    const [value, setValue] = useState<DateRangeValue>({ from: null, to: null })
+    const [value, setValue] = useState<DateRangeValue>({ from: null, to: null });
     return (
       <div className="flex flex-col gap-4 p-4">
         <DateRangePicker size="sm" value={value} onChange={setValue} />
         <DateRangePicker size="md" value={value} onChange={setValue} />
         <DateRangePicker size="lg" value={value} onChange={setValue} />
       </div>
-    )
+    );
   },
-}
+};
 
 // Mobile modal demo (force mobile via Storybook viewport)
 export const MobileModal: Story = {
   render: (args) => {
-    const [value, setValue] = useState<DateRangeValue>({ from: null, to: null })
-    return <DateRangePicker {...args} value={value} onChange={setValue} modalOnMobile />
+    const [value, setValue] = useState<DateRangeValue>({ from: null, to: null });
+    return <DateRangePicker {...args} value={value} onChange={setValue} modalOnMobile />;
   },
   parameters: {
     viewport: { defaultViewport: 'mobile1' },
   },
-}
+};
 
 // Keyboard navigation demo
 export const KeyboardNav: Story = {
   render: (args) => {
-    const [value, setValue] = useState<DateRangeValue>({ from: null, to: null })
+    const [value, setValue] = useState<DateRangeValue>({ from: null, to: null });
     return (
       <div className="p-4">
         <p className="mb-4 text-sm text-neutral-500">
-          Focus the picker and use: <kbd>Enter</kbd> to open, <kbd>Arrow</kbd> keys to navigate, 
+          Focus the picker and use: <kbd>Enter</kbd> to open, <kbd>Arrow</kbd> keys to navigate,
           <kbd>Enter</kbd> to select, <kbd>Escape</kbd> to close
         </p>
         <DateRangePicker {...args} value={value} onChange={setValue} />
       </div>
-    )
+    );
   },
-}
+};
 
 // Accessibility annotation
 Default.parameters = {
@@ -118,4 +118,4 @@ Default.parameters = {
       rules: [{ id: 'color-contrast', enabled: true }],
     },
   },
-}
+};
