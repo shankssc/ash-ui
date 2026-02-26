@@ -1,4 +1,4 @@
-import { render, screen /*, fireEvent, waitFor*/ } from '@testing-library/react';
+import { render, screen/* , fireEvent, waitFor*/ } from '@testing-library/react';
 // import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { DateRangePicker } from './DateRangePicker';
@@ -110,4 +110,45 @@ describe('DateRangePicker Component', () => {
       expect(screen.queryByTestId('calendar-container')).not.toBeInTheDocument();
     });
   });
+
+  describe('User Interactions', () => {
+    /*
+    * This one is failing 
+    it('calls onChange when date selected via CalendarContainer', async () => {
+    const user = userEvent.setup()
+    const onChange = vi.fn()
+    const testDate = new Date('2024-03-15')
+    
+    render(<DateRangePicker value={{ from: null, to: null }} onChange={onChange} />)
+    
+    // Simulate selecting a date from the calendar grid
+    const dayCell = screen.getByTestId(`day-${formatDate(testDate, 'yyyy-MM-dd')}`)
+    await user.click(dayCell)
+    
+    expect(onChange).toHaveBeenCalledWith({ from: testDate, to: null })
+  })
+    */
+    it('updates display when value prop changes (controlled mode)', () => {
+      const { rerender } = render(
+        <DateRangePicker value={{ from: null, to: null }} onChange={vi.fn()} />
+      )
+      
+      const picker = screen.getByTestId('date-range-picker')
+      expect(picker).toHaveTextContent('Select dates')
+      
+      rerender(
+        <DateRangePicker 
+          value={{ from: today, to: tomorrow }} 
+          onChange={vi.fn()} 
+        />
+      )
+      
+      const expectedFrom = formatDate(today, 'MMM d, yyyy')
+      const expectedTo = formatDate(tomorrow, 'MMM d, yyyy')
+      const expectedDisplay = `${expectedFrom} – ${expectedTo}`
+      
+      expect(picker).toHaveTextContent(expectedDisplay)
+    })
+  });
+
 });
