@@ -10,6 +10,32 @@ import {
 import type { DateRangeValue } from './types';
 
 // ───────────────────────────────────────────────────────────
+// TYPE-SAFE KEYBOARD EVENT MOCK
+// ───────────────────────────────────────────────────────────
+
+/**
+ * Creates a mock keyboard event that satisfies React.KeyboardEvent
+ * without using 'any'. Uses unknown as intermediate cast for type safety.
+ */
+const createMockKeyboardEvent = (key: string): React.KeyboardEvent => {
+  const preventDefault = vi.fn();
+
+  // Build minimal event object with only what handleKeyDown uses
+  const mockEvent = {
+    key,
+    preventDefault,
+    // Optional: add other properties if your hook accesses them
+    code: '',
+    bubbles: true,
+    cancelable: true,
+    stopPropagation: vi.fn(),
+  };
+
+  // Two-step cast: unknown → React.KeyboardEvent (avoids 'any' lint error)
+  return mockEvent as unknown as React.KeyboardEvent;
+};
+
+// ───────────────────────────────────────────────────────────
 // HELPERS - LOCAL TIME ONLY
 // ───────────────────────────────────────────────────────────
 
@@ -315,7 +341,7 @@ describe('useKeyboardNavigation', () => {
   it('ArrowRight increments date by 1 day', () => {
     const focused = relativeDate(10);
     const { result } = setup(focused);
-    const event = new KeyboardEvent('keydown', { key: 'ArrowRight' }) as any;
+    const event = createMockKeyboardEvent('ArrowRight');
     event.preventDefault = vi.fn();
 
     act(() => result.current.handleKeyDown(event));
@@ -336,7 +362,7 @@ describe('useKeyboardNavigation', () => {
     focused.setDate(focused.getDate() + 2);
 
     const { result } = setup(focused);
-    const event = new KeyboardEvent('keydown', { key: 'ArrowUp' }) as any;
+    const event = createMockKeyboardEvent('ArrowRight');
     event.preventDefault = vi.fn();
 
     act(() => result.current.handleKeyDown(event));
@@ -361,7 +387,7 @@ describe('useKeyboardNavigation', () => {
     focused.setDate(focused.getDate() - 2);
 
     const { result } = setup(focused);
-    const event = new KeyboardEvent('keydown', { key: 'ArrowDown' }) as any;
+    const event = createMockKeyboardEvent('ArrowRight');
     event.preventDefault = vi.fn();
 
     act(() => result.current.handleKeyDown(event));
@@ -379,12 +405,12 @@ describe('useKeyboardNavigation', () => {
     const focused = relativeDate(5);
     const { result } = setup(focused);
 
-    const event = new KeyboardEvent('keydown', { key: 'A' }) as any;
-    event.preventDefault = vi.fn();
+    const event = createMockKeyboardEvent('A');
 
     act(() => result.current.handleKeyDown(event));
 
     expect(onFocusedDateChange).not.toHaveBeenCalled();
+
     expect(event.preventDefault).not.toHaveBeenCalled();
   });
 });
