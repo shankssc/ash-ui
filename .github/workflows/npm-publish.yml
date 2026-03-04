@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "package.json" # Only trigger when version changes
+      - "ash-ui/package.json" # Only trigger when version changes
 
 jobs:
   publish:
