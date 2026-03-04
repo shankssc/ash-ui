@@ -5,7 +5,8 @@ on:
   push:
     branches: [main]
     paths:
-      - "ash-ui/package.json" # ← Fixed: nested path
+      - "ash-ui/package.json"
+  workflow_dispatch: # Manual trigger for testing
 
 jobs:
   publish:
@@ -13,10 +14,6 @@ jobs:
     permissions:
       contents: write
       id-token: write
-
-    defaults:
-      run:
-        working-directory: ash-ui # ← Critical: All steps run in nested dir
 
     steps:
       - name: Checkout repository
@@ -26,31 +23,38 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          registry-url: "https://registry.npmjs.org"
+          registry-url: "https://registry.npmjs.org" # ← Fixed: no trailing spaces
           cache: "npm"
-          cache-dependency-path: ash-ui/package-lock.json # ← Fixed
+          cache-dependency-path: "ash-ui/package-lock.json" # Relative to repo root
 
       - name: Install dependencies
         run: npm ci
+        working-directory: ash-ui # ← Explicit working-directory
 
       - name: Run type check
         run: npm run type-check
+        working-directory: ash-ui
 
       - name: Run lint
         run: npm run lint
+        working-directory: ash-ui
 
       - name: Run tests
         run: npm run test:coverage
+        working-directory: ash-ui
 
       - name: Build package
         run: npm run build
+        working-directory: ash-ui
 
       - name: Extract version from package.json
         id: package-version
         run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+        working-directory: ash-ui
 
       - name: Publish to npm
         run: npm publish --access public --provenance
+        working-directory: ash-ui
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
