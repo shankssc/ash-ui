@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from './Button';
-import type { ButtonVariant, ButtonSize } from './Button';
+import type { ButtonVariant, ButtonSize } from './types';
 import { FaHeart, FaStar } from 'react-icons/fa';
 
 /**
