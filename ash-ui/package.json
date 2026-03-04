@@ -1,7 +1,7 @@
 {
   "name": "ash-ui",
   "private": false,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Production-grade React component library with TypeScript and Tailwind CSS",
   "author": "Suyash <suyash15122@gmail.com>",
   "license": "MIT",
