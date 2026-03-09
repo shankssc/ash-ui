@@ -1,5 +1,5 @@
 {
-  "name": "ash-ui",
+  "name": "@shankssc/ash-ui",
   "private": false,
   "version": "0.1.1",
   "description": "Production-grade React component library with TypeScript and Tailwind CSS",
