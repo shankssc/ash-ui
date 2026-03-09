@@ -2,8 +2,29 @@
 
 Production-grade React component library with TypeScript + Tailwind CSS
 
-[![Storybook](https://img.shields.io/badge/Storybook-FF4785?style=for-the-badge&logo=storybook&logoColor=white)](https://suyash-ui.netlify.app)
+[![npm version](https://img.shields.io/npm/v/@shankssc/ash-ui.svg?style=for-the-badge&color=007acc)](https://www.npmjs.com/package/@shankssc/ash-ui)
+[![npm downloads](https://img.shields.io/npm/dm/@shankssc/ash-ui.svg?style=for-the-badge&color=007acc)](https://www.npmjs.com/package/@shankssc/ash-ui)
+[![Storybook](https://img.shields.io/badge/Storybook-FF4785?style=for-the-badge&logo=storybook&logoColor=white)](https://ash-ui.netlify.app)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+**@shankssc/ash-ui** — Accessible, type-safe, production-ready React components built with Tailwind CSS.
+
+## 🚀 Installation
+
+```bash
+npm install @shankssc/ash-ui
+# or
+yarn add @shankssc/ash-ui
+# or
+pnpm add @shankssc/ash-ui
+```
+
+### ⚠️ Import Styles (Required)
+
+```tsx
+// In your root file (e.g., main.tsx or App.tsx)
+import "@shankssc/ash-ui/styles.css";
+```
 
 ## ✨ Features
 
@@ -41,6 +62,17 @@ Each component includes:
 - Storybook 7
 - Vitest + Testing Library
 
-## 📄 License
+## 💻 Quick Example
 
-MIT
+```tsx
+import { DateRangePicker } from "@shankssc/ash-ui";
+import "@shankssc/ash-ui/styles.css";
+
+function BookingForm() {
+  const [range, setRange] = useState({ from: null, to: null });
+
+  return (
+    <DateRangePicker value={range} onChange={setRange} minDate={new Date()} />
+  );
+}
+```
