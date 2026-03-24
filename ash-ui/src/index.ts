@@ -53,3 +53,16 @@ export type {
   DateRangePickerVariant,
   DateRangePickerSize,
 } from '@/components/DateRangePicker';
+
+export { VirtualizedTable } from '@/components/VirtualizedTable';
+
+export type {
+  VirtualizedTableProps,
+  Column,
+  RowData,
+  SortState,
+  SortDirection as VirtualizedTableSortDirection,
+  SelectionMode,
+  SelectionState,
+  VirtualizedTableState,
+} from '@/components/VirtualizedTable';
